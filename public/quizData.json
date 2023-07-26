@@ -1,0 +1,77 @@
+[
+  {
+    "question": "What is the syntax to output text in console in JavaScript?",
+    "options": [
+      "console.write('Hello World')",
+      "console.log('Hello World')",
+      "print('Hello World')",
+      "printf('Hello World')"
+    ],
+    "answer": "console.log('Hello World')"
+  },
+  {
+    "question": "How would you declare an integer variable 'x' with a value of 5 in C++?",
+    "options": ["int x = 5;", "x = 5;", "x := 5;", "Int x = 5;"],
+    "answer": "int x = 5;"
+  },
+  {
+    "question": "Which of the following is not a loop structure in C++?",
+    "options": ["for", "while", "do-while", "repeat-until"],
+    "answer": "repeat-until"
+  },
+  {
+    "question": "Which Python data type is an ordered sequence of items?",
+    "options": ["List", "Tuple", "Dictionary", "Set"],
+    "answer": "List"
+  },
+  {
+    "question": "How do you indicate the end of a block of code in Python?",
+    "options": [
+      "With a semicolon (;)",
+      "With a closing bracket (})",
+      "With the keyword 'end'",
+      "With indentation"
+    ],
+    "answer": "With indentation"
+  },
+  {
+    "question": "Which of the following is a way to create a comment in a JavaScript program?",
+    "options": [
+      "<!-- This is a comment -->",
+      "# This is a comment",
+      "/* This is a comment */",
+      "COMMENT: This is a comment"
+    ],
+    "answer": "/* This is a comment */"
+  },
+  {
+    "question": "Which of the following is the correct operator to compare two variables for equality in JavaScript?",
+    "options": ["==", "===", "=", "!="],
+    "answer": "==="
+  },
+  {
+    "question": "What HTML tag is used to insert JavaScript code into a webpage?",
+    "options": ["<java>", "<js>", "<script>", "<javascript>"],
+    "answer": "<script>"
+  },
+  {
+    "question": "What does the 'www' stand for in a URL?",
+    "options": [
+      "World Wide Wait",
+      "World Wide Web",
+      "World Wide Words",
+      "World With Web"
+    ],
+    "answer": "World Wide Web"
+  },
+  {
+    "question": "What does 'GUI' stand for in computer science?",
+    "options": [
+      "Graphic User Interface",
+      "Graphical Unifying Interface",
+      "Graphical User Interface",
+      "Generic User Interface"
+    ],
+    "answer": "Graphical User Interface"
+  }
+]
