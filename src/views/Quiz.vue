@@ -41,7 +41,15 @@ export default {
     },
     nextQuestionHandler() {
       this.setUserAnswer(this.userAnswer);
-      
+
+      // Check if the user's answer is correct
+      if (this.userAnswer === this.currentQuestion.answer) {
+        window.alert('Correct!');
+      } else {
+        window.alert('Incorrect. The correct answer was: ' + this.currentQuestion.answer);
+      }
+
+      // Then move to the next question or go to summary page
       if (this.currentQuestionIndex < this.quizData.length - 1) {
         this.nextQuestion();
       } else {
