@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="summary-container">
     <h1>Quiz Summary</h1>
     <p>You answered {{ correctAnswers }} out of {{ totalQuestions }} questions correctly.</p>
-    <p>Your score: {{ score }}%</p>
+    <p class="score">Your score: {{ score }}%</p>
     <button @click="retakeQuiz">Retake Quiz</button>
   </div>
 </template>
@@ -36,19 +36,34 @@ export default {
 <style scoped>
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F2F2F2;
+}
+
+.summary-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Updated */
+  text-align: center;
+  padding: 0 2em;
 }
 
 h1 {
   color: #2447f9;
   font-size: 2em;
-  text-align: center;
 }
 
-.summary-container {
-  display: grid;
-  place-items: center;
-  height: 100vh;
-  text-align: center;
+p {
+  color: #333;
+  font-size: 1.2em;
+  margin: 1em 0;
+}
+
+.score {
+  font-size: 2em;
+  color: #30336b;
+  margin-top: 1em;
 }
 
 button {
@@ -57,6 +72,7 @@ button {
   padding: 10px 20px;
   font-size: 1em;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 1em;
@@ -65,11 +81,4 @@ button {
 button:hover {
   background-color: #0929c7;
 }
-
-.score {
-  font-size: 3em;
-  color: #30336b;
-  margin-top: 1em;
-}
 </style>
-

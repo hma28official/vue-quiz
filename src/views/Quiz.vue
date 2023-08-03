@@ -1,19 +1,17 @@
 <template>
-  <div>
+  <div class="quiz-container">
     <h1>Quiz</h1>
     <p v-if="isLoading">Loading...</p>
-    <div v-else-if="quizData.length && currentQuestion">
-      <p>{{ currentQuestion.question }}</p>
-      <div v-for="(option, index) in currentQuestion.options" :key="index">
-        <input type="radio" :id="option" :value="option" v-model="userAnswer">
-        <label :for="option">{{ option }}</label>
+    <div v-else>
+      <p>Time left: {{ remainingTime }} seconds</p>
+      <div v-if="quizData.length && currentQuestion">
+        <h2 class="question">{{ currentQuestion.question }}</h2>
+        <div v-for="(option, index) in currentQuestion.options" :key="index" class="option">
+          <input type="radio" :id="option" :value="option" v-model="userAnswer" :disabled="remainingTime === 0">
+          <label :for="option">{{ option }}</label>
+        </div>
+        <button v-if="userAnswer" @click="nextQuestionHandler">Next Question</button>
       </div>
-      <p v-if="userAnswers[currentQuestionIndex] !== undefined">
-        You answered: {{ userAnswers[currentQuestionIndex] }}
-        <span v-if="userAnswers[currentQuestionIndex] === currentQuestion.answer">Correct!</span>
-        <span v-else>Incorrect. The correct answer was: {{ currentQuestion.answer }}</span>
-      </p>
-      <button @click="nextQuestionHandler">Next Question</button>
     </div>
   </div>
 </template>
@@ -24,37 +22,53 @@ import { mapState, mapMutations } from 'vuex';
 export default {
   data() {
     return {
-      userAnswer: ''
+      userAnswer: '',
+      timerInterval: null
     }
   },
   computed: {
-    ...mapState(['quizData', 'currentQuestionIndex', 'userAnswers', 'isLoading']),
+    ...mapState(['quizData', 'currentQuestionIndex', 'userAnswers', 'isLoading', 'remainingTime']),
     currentQuestion() {
       return this.quizData[this.currentQuestionIndex];
     }
   },
   methods: {
-    ...mapMutations(['setUserAnswer', 'nextQuestion', 'resetQuiz']),
+    ...mapMutations(['setUserAnswer', 'nextQuestion', 'resetQuiz', 'setRemainingTime']),
     selectOption(option) {
-      this.userAnswer = option;
-      this.setUserAnswer(option);
+      if (this.remainingTime > 0) {
+        this.userAnswer = option;
+      }
     },
     nextQuestionHandler() {
+      // Set the user answer in the Vuex state
       this.setUserAnswer(this.userAnswer);
 
-      // Check if the user's answer is correct
+      // Show alert based on whether the user answer is correct or not
       if (this.userAnswer === this.currentQuestion.answer) {
         window.alert('Correct!');
       } else {
         window.alert('Incorrect. The correct answer was: ' + this.currentQuestion.answer);
       }
 
-      // Then move to the next question or go to summary page
+      // Stop the timer
+      clearInterval(this.timerInterval);
+
+      // Move to the next question or go to the summary page
       if (this.currentQuestionIndex < this.quizData.length - 1) {
         this.nextQuestion();
+        this.startTimer();
       } else {
         this.$router.push('/summary');
       }
+    },
+    startTimer() {
+      this.timerInterval = setInterval(() => {
+        if (this.remainingTime > 0) {
+          this.setRemainingTime(this.remainingTime - 1);
+        } else {
+          clearInterval(this.timerInterval);
+        }
+      }, 1000);
     }
   },
   watch: {
@@ -64,6 +78,10 @@ export default {
   },
   created() {
     this.$store.dispatch('fetchQuizData');
+    this.startTimer();
+  },
+  beforeUnmount() {
+    clearInterval(this.timerInterval);
   }
 }
 </script>
@@ -71,18 +89,23 @@ export default {
 <style scoped>
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F2F2F2;
+}
+
+.quiz-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh; /* Updated */
+  text-align: center;
+  padding: 0 2em;
 }
 
 h1 {
   color: #2447f9;
   font-size: 2em;
-  text-align: center;
-}
-
-.quiz-container {
-  display: grid;
-  place-items: center;
-  height: 100vh;
+  margin-bottom: 1em;
 }
 
 .question {
@@ -91,7 +114,8 @@ h1 {
 }
 
 .options {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 1em;
 }
 
@@ -110,6 +134,7 @@ button {
   padding: 10px 20px;
   font-size: 1em;
   border: none;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 1em;

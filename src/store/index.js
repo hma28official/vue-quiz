@@ -7,6 +7,7 @@ const store = createStore({
       currentQuestionIndex: 0,
       userAnswers: [],
       isLoading: true,
+      remainingTime: 60, // add this line
     };
   },
   mutations: {
@@ -19,6 +20,7 @@ const store = createStore({
     nextQuestion(state) {
       if (state.currentQuestionIndex < state.quizData.length - 1) {
         state.currentQuestionIndex++;
+        state.remainingTime = 60; // reset the time when go to the next question
         return true; // continue to next question
       } else {
         return false; // no more questions
@@ -27,9 +29,13 @@ const store = createStore({
     setLoading(state, loading) {
       state.isLoading = loading;
     },
+    setRemainingTime(state, time) {
+      state.remainingTime = time; // add this method
+    },
     resetQuiz(state) {
       state.currentQuestionIndex = 0;
       state.userAnswers = [];
+      state.remainingTime = 60; // reset the time when reset the quiz
     },
   },
   actions: {
