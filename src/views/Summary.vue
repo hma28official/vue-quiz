@@ -4,6 +4,7 @@
     <p>You answered {{ correctAnswers }} out of {{ totalQuestions }} questions correctly.</p>
     <p class="score">Your score: {{ score }}%</p>
     <button @click="retakeQuiz">Retake Quiz</button>
+    <button @click="goHome">Back to Home</button>
   </div>
 </template>
 
@@ -28,6 +29,9 @@ export default {
     retakeQuiz() {
       this.resetQuiz();
       this.$router.push('/quiz');
+    },
+    goHome() {
+      this.$router.push('/');
     }
   }
 }
@@ -76,6 +80,7 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 1em;
+  margin-right: 1em;
 }
 
 button:hover {

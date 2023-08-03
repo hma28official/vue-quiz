@@ -5,35 +5,72 @@
     <div v-else>
       <p>Time left: {{ remainingTime }} seconds</p>
       <div v-if="quizData.length && currentQuestion">
-        <h2 class="question">{{ currentQuestion.question }}</h2>
-        <div v-for="(option, index) in currentQuestion.options" :key="index" class="option">
-          <input type="radio" :id="option" :value="option" v-model="userAnswer" :disabled="remainingTime === 0">
+        <p>{{ currentQuestion.question }}</p>
+        <div v-for="(option, index) in currentQuestion.options" :key="index">
+          <input
+            type="radio"
+            :id="option"
+            :value="option"
+            v-model="userAnswer"
+            :disabled="remainingTime === 0"
+            @click="toggleAnswer"
+          />
           <label :for="option">{{ option }}</label>
         </div>
-        <button v-if="userAnswer" @click="nextQuestionHandler">Next Question</button>
+        <button
+          v-if="userAnswer || remainingTime === 0"
+          @click="nextQuestionHandler"
+        >
+          Next Question
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { mapState, mapMutations } from "vuex";
 
 export default {
   data() {
     return {
-      userAnswer: '',
-      timerInterval: null
-    }
+      userAnswer: "",
+      timerInterval: null,
+      previousAnswer: null,
+    };
   },
   computed: {
-    ...mapState(['quizData', 'currentQuestionIndex', 'userAnswers', 'isLoading', 'remainingTime']),
+    ...mapState([
+      "quizData",
+      "currentQuestionIndex",
+      "userAnswers",
+      "isLoading",
+      "remainingTime",
+    ]),
     currentQuestion() {
       return this.quizData[this.currentQuestionIndex];
-    }
+    },
   },
   methods: {
-    ...mapMutations(['setUserAnswer', 'nextQuestion', 'resetQuiz', 'setRemainingTime']),
+    ...mapMutations([
+      "setUserAnswer",
+      "nextQuestion",
+      "resetQuiz",
+      "setRemainingTime",
+    ]),
+    toggleAnswer(event) {
+      if (this.remainingTime > 0) {
+        const answer = event.target.value;
+
+        if (answer === this.previousAnswer) {
+          this.userAnswer = null;
+          this.previousAnswer = null;
+        } else {
+          this.userAnswer = answer;
+          this.previousAnswer = answer;
+        }
+      }
+    },
     selectOption(option) {
       if (this.remainingTime > 0) {
         this.userAnswer = option;
@@ -45,9 +82,11 @@ export default {
 
       // Show alert based on whether the user answer is correct or not
       if (this.userAnswer === this.currentQuestion.answer) {
-        window.alert('Correct!');
+        window.alert("Correct!");
       } else {
-        window.alert('Incorrect. The correct answer was: ' + this.currentQuestion.answer);
+        window.alert(
+          "Incorrect. The correct answer was: " + this.currentQuestion.answer
+        );
       }
 
       // Stop the timer
@@ -58,7 +97,7 @@ export default {
         this.nextQuestion();
         this.startTimer();
       } else {
-        this.$router.push('/summary');
+        this.$router.push("/summary");
       }
     },
     startTimer() {
@@ -69,27 +108,27 @@ export default {
           clearInterval(this.timerInterval);
         }
       }, 1000);
-    }
+    },
   },
   watch: {
     currentQuestionIndex() {
-      this.userAnswer = this.userAnswers[this.currentQuestionIndex] || '';
-    }
+      this.userAnswer = this.userAnswers[this.currentQuestionIndex] || "";
+    },
   },
   created() {
-    this.$store.dispatch('fetchQuizData');
+    this.$store.dispatch("fetchQuizData");
     this.startTimer();
   },
   beforeUnmount() {
     clearInterval(this.timerInterval);
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #F2F2F2;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f2f2f2;
 }
 
 .quiz-container {
