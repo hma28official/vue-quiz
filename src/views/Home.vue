@@ -2,7 +2,7 @@
   <div class="home-container">
     <h1>Welcome to The BuildWithAngga Quiz</h1>
     <p>Test your knowledge on various topics and see how well you do!</p>
-    <button @click="startQuiz">Start Quiz</button>
+    <button class="start-quiz-button" @click="startQuiz">Start Quiz</button>
   </div>
 </template>
 
@@ -27,7 +27,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh; /* Updated */
+  height: 80vh;
   text-align: center;
   padding: 0 2em;
 }
@@ -39,14 +39,14 @@ h1 {
 
 p {
   color: #333;
-  font-size: 1.2em;
+  font-size: 1.5em;
   margin: 1em 0;
 }
 
-button {
+.start-quiz-button {
   background-color: #3d5bf3;
   color: white;
-  padding: 15px 30px;
+  padding: 10px 20px;
   font-size: 1em;
   border: none;
   border-radius: 5px;
@@ -54,7 +54,7 @@ button {
   transition: background-color 0.3s ease;
 }
 
-button:hover {
+.start-quiz-button:hover {
   background-color: #0929c7;
 }
 </style>

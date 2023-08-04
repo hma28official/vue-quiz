@@ -3,8 +3,8 @@
     <h1>Quiz Summary</h1>
     <p>You answered {{ correctAnswers }} out of {{ totalQuestions }} questions correctly.</p>
     <p class="score">Your score: {{ score }}%</p>
-    <button @click="retakeQuiz">Retake Quiz</button>
-    <button @click="goHome">Back to Home</button>
+    <button class="retake-quiz-button" @click="retakeQuiz">Retake Quiz</button>
+    <button class="home-button" @click="goHome">Back to Home</button>
   </div>
 </template>
 
@@ -48,19 +48,19 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh; /* Updated */
+  height: 80vh;
   text-align: center;
   padding: 0 2em;
 }
 
 h1 {
   color: #2447f9;
-  font-size: 2em;
+  font-size: 2.5em;
 }
 
 p {
   color: #333;
-  font-size: 1.2em;
+  font-size: 1.5em;
   margin: 1em 0;
 }
 
@@ -70,7 +70,8 @@ p {
   margin-top: 1em;
 }
 
-button {
+.retake-quiz-button,
+.home-button {
   background-color: #3d5bf3;
   color: white;
   padding: 10px 20px;
@@ -80,10 +81,14 @@ button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   margin-top: 1em;
-  margin-right: 1em;
 }
 
-button:hover {
+.retake-quiz-button:hover,
+.home-button:hover {
   background-color: #0929c7;
+}
+
+.retake-quiz-button {
+  margin-right: 0.5em;
 }
 </style>

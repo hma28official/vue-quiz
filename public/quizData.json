@@ -1,5 +1,16 @@
 [
   {
+    "question": "What is the output of the JavaScript code shown in the image?",
+    "image": "https://s3-ap-southeast-1.amazonaws.com/sawaal.com/qaimg/What_is_the_correct_JavaScript_syntax_to_write_%E2%80%9CHello_World%E2%80%9D1556279922.jpg",
+    "options": [
+      "Hello, World!",
+      "TypeError: Cannot read property 'log' of undefined",
+      "ReferenceError: console is not defined",
+      "SyntaxError: missing ) after argument list"
+    ],
+    "answer": "Hello, World!"
+  },
+  {
     "question": "What is the syntax to output text in console in JavaScript?",
     "options": [
       "console.write('Hello World')",

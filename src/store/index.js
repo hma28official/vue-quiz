@@ -1,5 +1,12 @@
 import { createStore } from "vuex";
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
 const store = createStore({
   state() {
     return {
@@ -7,11 +14,12 @@ const store = createStore({
       currentQuestionIndex: 0,
       userAnswers: [],
       isLoading: true,
-      remainingTime: 60, // add this line
+      remainingTime: 60,
     };
   },
   mutations: {
     setQuizData(state, quizData) {
+      shuffleArray(quizData);
       state.quizData = quizData;
     },
     setUserAnswer(state, answer) {

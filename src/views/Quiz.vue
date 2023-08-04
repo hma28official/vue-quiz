@@ -3,22 +3,31 @@
     <h1>Quiz</h1>
     <p v-if="isLoading">Loading...</p>
     <div v-else>
-      <p>Time left: {{ remainingTime }} seconds</p>
+      <div class="timer">Time left: {{ remainingTime }} seconds</div>
       <div v-if="quizData.length && currentQuestion">
-        <p>{{ currentQuestion.question }}</p>
-        <div v-for="(option, index) in currentQuestion.options" :key="index">
-          <input
-            type="radio"
-            :id="option"
-            :value="option"
-            v-model="userAnswer"
-            :disabled="remainingTime === 0"
-            @click="toggleAnswer"
-          />
-          <label :for="option">{{ option }}</label>
+        <div class="question">{{ currentQuestion.question }}</div>
+        <img v-if="currentQuestion.image" :src="currentQuestion.image" alt="Question image" class="question-image">
+        <div class="options" v-for="(option, index) in currentQuestion.options" :key="index">
+          <div class="option">
+            <input
+              type="radio"
+              :id="option"
+              :value="option"
+              v-model="userAnswer"
+              :disabled="remainingTime === 0 || showCorrect"
+              @click="toggleAnswer"
+            />
+            <label :for="option" :class="getLabelClass(option)">{{ option }}</label>
+          </div>
         </div>
-        <button
+        <button class="submit-button"
           v-if="userAnswer || remainingTime === 0"
+          @click="submitAnswer"
+        >
+          Submit
+        </button>
+        <button class="next-button"
+          v-if="showCorrect && (userAnswer || remainingTime === 0)"
           @click="nextQuestionHandler"
         >
           Next Question
@@ -37,6 +46,7 @@ export default {
       userAnswer: "",
       timerInterval: null,
       previousAnswer: null,
+      showCorrect: false,
     };
   },
   computed: {
@@ -59,7 +69,7 @@ export default {
       "setRemainingTime",
     ]),
     toggleAnswer(event) {
-      if (this.remainingTime > 0) {
+      if (this.remainingTime > 0 && !this.showCorrect) {
         const answer = event.target.value;
 
         if (answer === this.previousAnswer) {
@@ -71,28 +81,28 @@ export default {
         }
       }
     },
-    selectOption(option) {
-      if (this.remainingTime > 0) {
-        this.userAnswer = option;
+    getLabelClass(option) {
+      if (this.showCorrect) {
+        if (option === this.currentQuestion.answer) {
+          return "correct-answer";
+        } else if (option === this.userAnswer) {
+          return "wrong-answer";
+        }
       }
+      return "";
     },
-    nextQuestionHandler() {
+    submitAnswer() {
       // Set the user answer in the Vuex state
       this.setUserAnswer(this.userAnswer);
 
-      // Show alert based on whether the user answer is correct or not
-      if (this.userAnswer === this.currentQuestion.answer) {
-        window.alert("Correct!");
-      } else {
-        window.alert(
-          "Incorrect. The correct answer was: " + this.currentQuestion.answer
-        );
-      }
-
+      this.showCorrect = true;
+    },
+    nextQuestionHandler() {
       // Stop the timer
       clearInterval(this.timerInterval);
 
-      // Move to the next question or go to the summary page
+      this.showCorrect = false;
+
       if (this.currentQuestionIndex < this.quizData.length - 1) {
         this.nextQuestion();
         this.startTimer();
@@ -136,19 +146,33 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 80vh; /* Updated */
+  height: 80vh;
   text-align: center;
   padding: 0 2em;
 }
 
 h1 {
   color: #2447f9;
-  font-size: 2em;
+  font-size: 2.5em;
+  margin-bottom: 1em;
+}
+
+.timer {
+  font-size: 1.5em;
+  color: #30336b;
   margin-bottom: 1em;
 }
 
 .question {
   font-size: 1.5em;
+  color: #333;
+  margin-bottom: 1em;
+}
+
+.question-image {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
   margin-bottom: 1em;
 }
 
@@ -167,7 +191,18 @@ input[type="radio"] {
   margin-right: 0.5em;
 }
 
-button {
+.correct-answer {
+  background-color: #28a745;
+  color: white;
+}
+
+.wrong-answer {
+  background-color: #dc3545;
+  color: white;
+}
+
+.submit-button,
+.next-button {
   background-color: #3d5bf3;
   color: white;
   padding: 10px 20px;
@@ -179,7 +214,12 @@ button {
   margin-top: 1em;
 }
 
-button:hover {
+.submit-button:hover,
+.next-button:hover {
   background-color: #0929c7;
+}
+
+.submit-button {
+  margin-right: 0.5em;
 }
 </style>
