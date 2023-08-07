@@ -6,28 +6,37 @@
       <div class="timer">Time left: {{ remainingTime }} seconds</div>
       <div v-if="quizData.length && currentQuestion">
         <div class="question">{{ currentQuestion.question }}</div>
-        <img v-if="currentQuestion.image" :src="currentQuestion.image" alt="Question image" class="question-image">
-        <div class="options" v-for="(option, index) in currentQuestion.options" :key="index">
-          <div class="option">
-            <input
-              type="radio"
-              :id="option"
-              :value="option"
-              v-model="userAnswer"
-              :disabled="remainingTime === 0 || showCorrect"
-              @click="toggleAnswer"
-            />
-            <label :for="option" :class="getLabelClass(option)">{{ option }}</label>
-          </div>
+        <img
+          v-if="currentQuestion.image"
+          :src="currentQuestion.image"
+          alt="Question image"
+          class="question-image"
+        />
+        <div
+          v-for="(option, index) in shuffledOptions"
+          :key="index"
+          :class="optionClass(option)"
+        >
+          <input
+            type="radio"
+            :id="option"
+            :value="option"
+            v-model="userAnswer"
+            :disabled="remainingTime === 0 || submitted"
+            @click="toggleAnswer"
+          />
+          <label :for="option">{{ option }}</label>
         </div>
-        <button class="submit-button"
-          v-if="userAnswer || remainingTime === 0"
+        <button
+          class="submit-button"
+          v-if="!submitted && remainingTime > 0 && (userAnswer || remainingTime === 0)"
           @click="submitAnswer"
         >
           Submit
         </button>
-        <button class="next-button"
-          v-if="showCorrect && (userAnswer || remainingTime === 0)"
+        <button
+          class="next-button"
+          v-if="submitted || remainingTime === 0"
           @click="nextQuestionHandler"
         >
           Next Question
@@ -40,13 +49,21 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export default {
   data() {
     return {
       userAnswer: "",
       timerInterval: null,
       previousAnswer: null,
-      showCorrect: false,
+      submitted: false,
     };
   },
   computed: {
@@ -58,7 +75,17 @@ export default {
       "remainingTime",
     ]),
     currentQuestion() {
-      return this.quizData[this.currentQuestionIndex];
+      let question = this.quizData[this.currentQuestionIndex];
+      if (question) {
+        question = JSON.parse(JSON.stringify(question));
+        question.options = shuffleArray(question.options);
+      }
+      return question;
+    },
+    shuffledOptions() {
+      return this.currentQuestion
+        ? shuffleArray([...this.currentQuestion.options])
+        : [];
     },
   },
   methods: {
@@ -68,8 +95,19 @@ export default {
       "resetQuiz",
       "setRemainingTime",
     ]),
+    optionClass(option) {
+      if (!this.submitted) {
+        return;
+      }
+      if (option === this.currentQuestion.answer) {
+        return "correct-answer"; // add 'correct' class
+      }
+      if (option === this.userAnswer) {
+        return "wrong-answer"; // add 'incorrect' class
+      }
+    },
     toggleAnswer(event) {
-      if (this.remainingTime > 0 && !this.showCorrect) {
+      if (this.remainingTime > 0 && !this.submitted) {
         const answer = event.target.value;
 
         if (answer === this.previousAnswer) {
@@ -81,36 +119,30 @@ export default {
         }
       }
     },
-    getLabelClass(option) {
-      if (this.showCorrect) {
-        if (option === this.currentQuestion.answer) {
-          return "correct-answer";
-        } else if (option === this.userAnswer) {
-          return "wrong-answer";
-        }
-      }
-      return "";
-    },
     submitAnswer() {
-      // Set the user answer in the Vuex state
-      this.setUserAnswer(this.userAnswer);
-
-      this.showCorrect = true;
+      this.submitted = true;
+      if (this.remainingTime > 0) {
+        clearInterval(this.timerInterval);
+      }
     },
     nextQuestionHandler() {
-      // Stop the timer
-      clearInterval(this.timerInterval);
-
-      this.showCorrect = false;
-
+      // Set the user answer in the Vuex state
+      this.setUserAnswer(this.userAnswer);
+      // Move to the next question or go to the summary page
       if (this.currentQuestionIndex < this.quizData.length - 1) {
         this.nextQuestion();
-        this.startTimer();
       } else {
         this.$router.push("/summary");
       }
+      // Reset the user answer and the submitted state
+      this.userAnswer = "";
+      this.submitted = false;
+      this.startTimer();
     },
     startTimer() {
+      if (this.timerInterval) {
+        clearInterval(this.timerInterval);
+      }
       this.timerInterval = setInterval(() => {
         if (this.remainingTime > 0) {
           this.setRemainingTime(this.remainingTime - 1);
@@ -123,6 +155,7 @@ export default {
   watch: {
     currentQuestionIndex() {
       this.userAnswer = this.userAnswers[this.currentQuestionIndex] || "";
+      this.submitted = false;
     },
   },
   created() {
@@ -192,13 +225,19 @@ input[type="radio"] {
 }
 
 .correct-answer {
-  background-color: #28a745;
+  background-color: #4caf50;
   color: white;
+  padding: 0.5em;
+  border-radius: 5px;
+  margin: 0.5em 0;
 }
 
 .wrong-answer {
-  background-color: #dc3545;
+  background-color: #f44336;
   color: white;
+  padding: 0.5em;
+  border-radius: 5px;
+  margin: 0.5em 0;
 }
 
 .submit-button,
