@@ -1,14 +1,63 @@
 [
   {
-    "question": "What is the output of the JavaScript code shown in the image?",
-    "image": "https://s3-ap-southeast-1.amazonaws.com/sawaal.com/qaimg/What_is_the_correct_JavaScript_syntax_to_write_%E2%80%9CHello_World%E2%80%9D1556279922.jpg",
+    "question": "What is the database technology represented by this logo?",
+    "image": "https://www.devart.com/dbforge/postgresql/images/postgresql-studio.png",
     "options": [
-      "Hello, World!",
-      "TypeError: Cannot read property 'log' of undefined",
-      "ReferenceError: console is not defined",
-      "SyntaxError: missing ) after argument list"
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/MongoDB_Logo.svg/2560px-MongoDB_Logo.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/SQLite370.svg/1200px-SQLite370.svg.png",
+      "https://upload.wikimedia.org/wikipedia/id/a/a9/MySQL.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png"
     ],
-    "answer": "Hello, World!"
+    "answer": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Postgresql_elephant.svg/1200px-Postgresql_elephant.svg.png",
+    "answerType": "image"
+  },
+  {
+    "question": "What is the cloud platform represented by this logo?",
+    "image": "https://cloud.google.com/static/docs/images/overview/console.png",
+    "options": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Microsoft_Azure.svg/1200px-Microsoft_Azure.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Amazon_Web_Services_Logo.svg/1200px-Amazon_Web_Services_Logo.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/IBM_logo.svg/1200px-IBM_logo.svg.png",
+      "https://logowik.com/content/uploads/images/google-cloud.jpg"
+    ],
+    "answer": "https://logowik.com/content/uploads/images/google-cloud.jpg",
+    "answerType": "image"
+  },
+  {
+    "question": "What is the programming language represented by this logo?",
+    "image": "https://i.stack.imgur.com/2Sb2P.png",
+    "options": [
+      "https://www.computerhope.com/jargon/j/javascript.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Logo_C_sharp.svg/1200px-Logo_C_sharp.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Rust_programming_language_black_logo.svg/1024px-Rust_programming_language_black_logo.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png"
+    ],
+    "answer": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/PHP-logo.svg/2560px-PHP-logo.svg.png",
+    "answerType": "image"
+  },
+  {
+    "question": "What is the front-end library represented by this logo?",
+    "image": "https://docs.vuejs.id/images/vue-component.png",
+    "options": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Bootstrap_logo.svg/1200px-Bootstrap_logo.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/1200px-Angular_full_color_logo.svg.png"
+    ],
+    "answer": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Vue.js_Logo_2.svg/1200px-Vue.js_Logo_2.svg.png",
+    "answerType": "image"
+  },
+  {
+    "question": "What is the operating system represented by this logo?",
+    "image": "https://blogs.windows.com/wp-content/uploads/prod/sites/2/2021/06/WIN_Start_GenZ_Light_16x10_en-US-1024x640.png",
+    "options": [
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Tux.svg/1727px-Tux.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/1024px-Windows_logo_-_2012.svg.png",
+      "https://upload.wikimedia.org/wikipedia/commons/a/ab/Apple-logo.png",
+      "https://img.freepik.com/free-icon/android_318-674214.jpg"
+    ],
+    "answer": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/1024px-Windows_logo_-_2012.svg.png",
+    "answerType": "image"
   },
   {
     "question": "What is the syntax to output text in console in JavaScript?",
@@ -18,22 +67,26 @@
       "print('Hello World')",
       "printf('Hello World')"
     ],
-    "answer": "console.log('Hello World')"
+    "answer": "console.log('Hello World')",
+    "answerType": "text"
   },
   {
     "question": "How would you declare an integer variable 'x' with a value of 5 in C++?",
     "options": ["int x = 5;", "x = 5;", "x := 5;", "Int x = 5;"],
-    "answer": "int x = 5;"
+    "answer": "int x = 5;",
+    "answerType": "text"
   },
   {
     "question": "Which of the following is not a loop structure in C++?",
     "options": ["for", "while", "do-while", "repeat-until"],
-    "answer": "repeat-until"
+    "answer": "repeat-until",
+    "answerType": "text"
   },
   {
     "question": "Which Python data type is an ordered sequence of items?",
     "options": ["List", "Tuple", "Dictionary", "Set"],
-    "answer": "List"
+    "answer": "List",
+    "answerType": "text"
   },
   {
     "question": "How do you indicate the end of a block of code in Python?",
@@ -43,27 +96,20 @@
       "With the keyword 'end'",
       "With indentation"
     ],
-    "answer": "With indentation"
-  },
-  {
-    "question": "Which of the following is a way to create a comment in a JavaScript program?",
-    "options": [
-      "<!-- This is a comment -->",
-      "# This is a comment",
-      "/* This is a comment */",
-      "COMMENT: This is a comment"
-    ],
-    "answer": "/* This is a comment */"
+    "answer": "With indentation",
+    "answerType": "text"
   },
   {
     "question": "Which of the following is the correct operator to compare two variables for equality in JavaScript?",
     "options": ["==", "===", "=", "!="],
-    "answer": "==="
+    "answer": "===",
+    "answerType": "text"
   },
   {
     "question": "What HTML tag is used to insert JavaScript code into a webpage?",
     "options": ["<java>", "<js>", "<script>", "<javascript>"],
-    "answer": "<script>"
+    "answer": "<script>",
+    "answerType": "text"
   },
   {
     "question": "What does the 'www' stand for in a URL?",
@@ -73,7 +119,8 @@
       "World Wide Words",
       "World With Web"
     ],
-    "answer": "World Wide Web"
+    "answer": "World Wide Web",
+    "answerType": "text"
   },
   {
     "question": "What does 'GUI' stand for in computer science?",
@@ -83,6 +130,7 @@
       "Graphical User Interface",
       "Generic User Interface"
     ],
-    "answer": "Graphical User Interface"
+    "answer": "Graphical User Interface",
+    "answerType": "text"
   }
 ]

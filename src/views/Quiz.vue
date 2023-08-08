@@ -1,46 +1,60 @@
 <template>
-  <div class="quiz-container">
-    <h1>Quiz</h1>
-    <p v-if="isLoading">Loading...</p>
-    <div v-else>
-      <div class="timer">Time left: {{ remainingTime }} seconds</div>
-      <div v-if="quizData.length && currentQuestion">
-        <div class="question">{{ currentQuestion.question }}</div>
-        <img
-          v-if="currentQuestion.image"
-          :src="currentQuestion.image"
-          alt="Question image"
-          class="question-image"
-        />
-        <div
-          v-for="(option, index) in shuffledOptions"
-          :key="index"
-          :class="optionClass(option)"
-        >
-          <input
-            type="radio"
-            :id="option"
-            :value="option"
-            v-model="userAnswer"
-            :disabled="remainingTime === 0 || submitted"
-            @click="toggleAnswer"
+  <div class="quiz-page">
+    <h1 class="quiz-title">Quiz</h1>
+    <div class="quiz-container">
+      <p v-if="isLoading">Loading...</p>
+      <div v-else>
+        <div class="timer">Time left: {{ remainingTime }} seconds</div>
+        <div v-if="quizData.length && currentQuestion">
+          <div class="question">{{ currentQuestion.question }}</div>
+          <img
+            v-if="currentQuestion.image"
+            :src="currentQuestion.image"
+            alt="Question image"
+            class="question-image"
           />
-          <label :for="option">{{ option }}</label>
+          <div
+            v-for="(option, index) in shuffledOptions"
+            :key="index"
+            :class="optionClass(option)"
+          >
+            <input
+              type="radio"
+              :id="option"
+              :value="option"
+              v-model="userAnswer"
+              :disabled="remainingTime === 0 || submitted"
+              @click="toggleAnswer"
+            />
+            <label :for="option">
+              <img
+                v-if="isUrl(option)"
+                :src="option"
+                class="option-image"
+                alt="Option Image"
+              />
+              <span v-else>{{ option }}</span>
+            </label>
+          </div>
+          <button
+            class="submit-button"
+            v-if="
+              !submitted &&
+              remainingTime > 0 &&
+              (userAnswer || remainingTime === 0)
+            "
+            @click="submitAnswer"
+          >
+            Submit
+          </button>
+          <button
+            class="next-button"
+            v-if="submitted || remainingTime === 0"
+            @click="nextQuestionHandler"
+          >
+            Next Question
+          </button>
         </div>
-        <button
-          class="submit-button"
-          v-if="!submitted && remainingTime > 0 && (userAnswer || remainingTime === 0)"
-          @click="submitAnswer"
-        >
-          Submit
-        </button>
-        <button
-          class="next-button"
-          v-if="submitted || remainingTime === 0"
-          @click="nextQuestionHandler"
-        >
-          Next Question
-        </button>
       </div>
     </div>
   </div>
@@ -49,11 +63,14 @@
 <script>
 import { mapState, mapMutations } from "vuex";
 
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+function shuffleArray(array, type) {
+  if (type === "text") {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
   }
+  // Don't shuffle if type is 'image'
   return array;
 }
 
@@ -78,13 +95,16 @@ export default {
       let question = this.quizData[this.currentQuestionIndex];
       if (question) {
         question = JSON.parse(JSON.stringify(question));
-        question.options = shuffleArray(question.options);
+        question.options = shuffleArray(question.options, question.answerType); // pass the answer type here
       }
       return question;
     },
     shuffledOptions() {
       return this.currentQuestion
-        ? shuffleArray([...this.currentQuestion.options])
+        ? shuffleArray(
+            [...this.currentQuestion.options],
+            this.currentQuestion.answerType
+          ) // pass the answer type here
         : [];
     },
   },
@@ -95,27 +115,54 @@ export default {
       "resetQuiz",
       "setRemainingTime",
     ]),
+    isUrl(str) {
+      try {
+        new URL(str);
+      } catch (_) {
+        return false;
+      }
+      return true;
+    },
     optionClass(option) {
       if (!this.submitted) {
         return;
       }
-      if (option === this.currentQuestion.answer) {
-        return "correct-answer"; // add 'correct' class
-      }
-      if (option === this.userAnswer) {
-        return "wrong-answer"; // add 'incorrect' class
+      if (this.currentQuestion.answerType === "text") {
+        if (option === this.currentQuestion.answer) {
+          return "correct-answer"; // add 'correct' class
+        }
+        if (option === this.userAnswer) {
+          return "wrong-answer"; // add 'incorrect' class
+        }
+      } else if (this.currentQuestion.answerType === "image") {
+        if (option === this.currentQuestion.answer) {
+          return "correct-answer"; // add 'correct' class
+        }
+        if (option === this.userAnswer) {
+          return "wrong-answer"; // add 'incorrect' class
+        }
       }
     },
     toggleAnswer(event) {
       if (this.remainingTime > 0 && !this.submitted) {
         const answer = event.target.value;
 
-        if (answer === this.previousAnswer) {
-          this.userAnswer = null;
-          this.previousAnswer = null;
-        } else {
-          this.userAnswer = answer;
-          this.previousAnswer = answer;
+        if (this.currentQuestion.answerType === "text") {
+          if (answer === this.previousAnswer) {
+            this.userAnswer = null;
+            this.previousAnswer = null;
+          } else {
+            this.userAnswer = answer;
+            this.previousAnswer = answer;
+          }
+        } else if (this.currentQuestion.answerType === "image") {
+          if (answer === this.previousAnswer) {
+            this.userAnswer = null;
+            this.previousAnswer = null;
+          } else {
+            this.userAnswer = answer;
+            this.previousAnswer = answer;
+          }
         }
       }
     },
@@ -174,14 +221,30 @@ body {
   background-color: #f2f2f2;
 }
 
+.quiz-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2em;
+}
+
+.quiz-title {
+  color: #2447f9;
+  font-size: 2em;
+  margin-bottom: 1em;
+}
+
 .quiz-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  height: 80vh;
-  text-align: center;
-  padding: 0 2em;
+  width: 100%;
+  max-width: 800px;  /* Maksimum lebar container */
+  background: #fff; /* Background putih untuk quiz-container */
+  padding: 2em;     /* Beri padding di sekitar konten */
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);  /* Bayangan untuk depth */
+  border-radius: 10px;  /* Membuat sudut container menjadi rounded */
+  overflow-y: auto;
 }
 
 h1 {
@@ -191,7 +254,7 @@ h1 {
 }
 
 .timer {
-  font-size: 1.5em;
+  font-size: 1.2em;
   color: #30336b;
   margin-bottom: 1em;
 }
@@ -218,6 +281,11 @@ h1 {
 .option {
   display: flex;
   align-items: center;
+}
+
+.option-image {
+  width: 100px;
+  height: 100px;
 }
 
 input[type="radio"] {
